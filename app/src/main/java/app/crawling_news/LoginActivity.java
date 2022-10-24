@@ -1,4 +1,4 @@
-package app.webcrollingexample;
+package app.crawling_news;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,7 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -42,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-            Toast.makeText(this, "로그인 상태를 유지합니다", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, lastLogin.getDisplayName() + "님 환영합니다!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -76,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityResult.launch(signInIntent);
+        login.setEnabled(false);
     }
 
     ActivityResultLauncher<Intent> startActivityResult = registerForActivityResult(
@@ -87,6 +87,9 @@ public class LoginActivity extends AppCompatActivity {
                         Intent data = result.getData();
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                         handleSignInResult(task);
+                    } else {
+                        Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
+                        login.setEnabled(true);
                     }
                 }
             });
@@ -100,13 +103,21 @@ public class LoginActivity extends AppCompatActivity {
             String givenName = account.getGivenName();
             String id = Objects.requireNonNull(account.getId()).toLowerCase(Locale.ROOT);
             String photo = null;
+            String token = account.getIdToken();
             if (account.getPhotoUrl() != null) {
                 photo = account.getPhotoUrl().toString();
             }
-            String token = account.getIdToken();
-            Log.d("gLogin", "\nId : " + id + "\nDisplayName : " + displayName + "\nFamilyName : " + familyName +
-                    "\nGivenName : " + givenName + "\nToken : " + token + "\nEmail : " + email + "\nprofile : " + photo);
-            Snackbar.make(LoginActivity.this, loginLayout, "로그인 성공", Snackbar.LENGTH_SHORT).show();
+
+            Log.d("gLogin", "\nId : " + id + "Account" + account + "\nDisplayName : " + displayName
+                    + "\nFamilyName : " + familyName + "\nGivenName : " + givenName + "\nToken : "
+                    + token + "\nEmail : " + email + "\nprofile : " + photo);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(LoginActivity.this, displayName + "님 환영합니다!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

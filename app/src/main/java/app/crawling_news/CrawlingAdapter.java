@@ -4,7 +4,7 @@
  * 개발시작 2022-06-20
  */
 
-package app.webcrollingexample;
+package app.crawling_news;
 
 import android.content.Context;
 import android.view.LayoutInflater;

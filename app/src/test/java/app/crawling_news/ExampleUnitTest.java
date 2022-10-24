@@ -1,4 +1,4 @@
-package app.webcrollingexample;
+package app.crawling_news;
 
 import org.junit.Test;
 

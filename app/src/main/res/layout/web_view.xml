@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@+id/webViewTr"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/webViewBackIv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
@@ -27,31 +27,38 @@
             android:src="@drawable/back"
             app:tint="@color/primaryColor" />
 
-        <TextView
-            android:id="@+id/webViewURLTv"
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/webViewOptionIv"
             android:layout_toEndOf="@+id/webViewBackIv"
             android:gravity="center_vertical"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:text="URL"
-            android:lines="1"
-            android:ellipsize="end"
-            android:textColor="@color/primaryColor"
-            android:textSize="15sp" />
+            android:overScrollMode="never"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:scrollbars="none">
+
+            <TextView
+                android:id="@+id/webViewURLTv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="URL"
+                android:textColor="@color/primaryColor"
+                android:textIsSelectable="true"
+                android:textSize="15sp" />
+        </HorizontalScrollView>
 
         <ImageView
             android:id="@+id/webViewOptionIv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/more"
-            android:layout_marginEnd="5dp"
             app:tint="@color/primaryColor" />
     </RelativeLayout>
 

@@ -3,9 +3,25 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/drawable-v21/app_widget_background.xml" value="0.1235" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/drawable-v21/app_widget_inner_view_background.xml" value="0.1235" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/activity_login.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/app_w_idget.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/app_widget.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/app_widget_view.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/book_list_item.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/book_mark.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/list_item.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/live_news.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/web_view.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/layout/widget_list_item.xml" value="0.2526041666666667" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/menu/popupmenu.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrawlingNews/app/src/main/res/xml/appwidget_info.xml" value="0.2526041666666667" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrollingExample/app/src/main/res/drawable/exit.xml" value="0.2015" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrollingExample/app/src/main/res/layout/activity_login.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrollingExample/app/src/main/res/layout/activity_main.xml" value="0.176" />
+        <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrollingExample/app/src/main/res/layout/list_item.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrollingExample/app/src/main/res/layout/listitem.xml" value="0.2" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrollingExample/app/src/main/res/layout/web_view.xml" value="0.24322916666666666" />
         <entry key="..\:/Users/USER/AndroidStudioProjects/WebCrollingExample/app/src/main/res/menu/popupmenu.xml" value="0.25364583333333335" />

@@ -6,4 +6,9 @@
         android:title="공유하기"
         android:icon="@drawable/share"/>
 
+    <item
+        android:id="@+id/pop_save"
+        android:title="보관하기"
+        android:icon="@drawable/save"/>
+
 </menu>

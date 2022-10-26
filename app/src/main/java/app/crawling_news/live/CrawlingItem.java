@@ -1,4 +1,4 @@
-package app.crawling_news;
+package app.crawling_news.live;
 
 import android.graphics.drawable.Drawable;
 

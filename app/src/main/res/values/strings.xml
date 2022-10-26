@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">뉴스 크롤링</string>
+    <string name="bottom_label">Version 1.0.1\n https://github.com/tekken5953/WebCrollingExample.git</string>
 </resources>

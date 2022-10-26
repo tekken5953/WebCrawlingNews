@@ -13,8 +13,9 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class WebViewActivity extends AppCompatActivity {
+public class WebViewInner extends AppCompatActivity {
 
     WebView webView;
     ImageView back,more;
@@ -51,7 +52,7 @@ public class WebViewActivity extends AppCompatActivity {
         more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(WebViewActivity.this, more);
+                PopupMenu popup = new PopupMenu(WebViewInner.this, more);
                 //Inflating the Popup using xml file
                 popup.getMenuInflater().inflate(R.menu.popupmenu, popup.getMenu());
 
@@ -64,6 +65,8 @@ public class WebViewActivity extends AppCompatActivity {
                             intent.putExtra(Intent.EXTRA_TEXT,urlTv.getText().toString());
                             Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
                             startActivity(chooser);
+                        } else if (item.getItemId() == R.id.pop_save) {
+                            Toast.makeText(WebViewInner.this, "해당 기사가 보관되었습니다", Toast.LENGTH_SHORT).show();
                         }
                         return true;
                     }

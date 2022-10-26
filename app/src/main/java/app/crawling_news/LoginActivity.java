@@ -26,7 +26,8 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
-    //https://velog.io/@jeongminji4490/Android-Google-Login-%EA%B5%AC%ED%98%84
+    // 전체 진행 과정https://velog.io/@jeongminji4490/Android-Google-Login-%EA%B5%AC%ED%98%84
+    // 구글 콘솔 등록 developers.google.com/identity/sign-in/android/start-integrating
 
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -42,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
             Toast.makeText(this, lastLogin.getDisplayName() + "님 환영합니다!", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.e("Tag", "Last login Session is NULL");
         }
     }
 
@@ -89,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                         handleSignInResult(task);
                     } else {
                         Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
+                        Log.e("Tag", "result code is " + result.getResultCode());
                         login.setEnabled(true);
                     }
                 }

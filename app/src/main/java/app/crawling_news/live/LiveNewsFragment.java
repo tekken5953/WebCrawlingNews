@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,9 +59,7 @@ public class LiveNewsFragment extends Fragment {
 
     ArrayList<CrawlingItem> mList = new ArrayList<>();
     CrawlingAdapter adapter;
-
-    Document doc = null;
-    Elements ele, ele2;
+    Elements ele;
 
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -77,7 +76,7 @@ public class LiveNewsFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        // 리사이클러뷰에 Adapter 객체 지정.
+        position = 0;
     }
 
     @Override
@@ -93,15 +92,17 @@ public class LiveNewsFragment extends Fragment {
 
         crawlingView = view.findViewById(R.id.crawlingView);
         swipe = view.findViewById(R.id.swipeLayout);
-        adapter = new CrawlingAdapter(mList);
-        crawlingView.setAdapter(adapter);
         logout = view.findViewById(R.id.googleLogoutBtn);
         title = view.findViewById(R.id.topTitleTv);
         time = view.findViewById(R.id.topTimeTv);
-        context = getContext();
         pb = view.findViewById(R.id.mainPB);
-        position = 0;
         mainLayout = view.findViewById(R.id.liveMainLayout);
+
+        LinearLayoutManagerWrapper wrapper = new LinearLayoutManagerWrapper(context, LinearLayoutManager.VERTICAL, false);
+        crawlingView.setLayoutManager(wrapper);
+        context = requireActivity().getApplicationContext();
+        adapter = new CrawlingAdapter(mList);
+        crawlingView.setAdapter(adapter);
 
         // 앱에 필요한 사용자 데이터를 요청하도록 로그인 옵션을 설정한다.
         // DEFAULT_SIGN_IN parameter는 유저의 ID와 기본적인 프로필 정보를 요청하는데 사용된다.
@@ -136,7 +137,7 @@ public class LiveNewsFragment extends Fragment {
                     Intent intent = new Intent(context, WebViewInner.class);
                     intent.putExtra("link", link);
                     startActivity(intent);
-                    getActivity().overridePendingTransition(0, 0);
+                    requireActivity().overridePendingTransition(0, 0);
                 }
             }
         });
@@ -192,6 +193,7 @@ public class LiveNewsFragment extends Fragment {
                 }
             }
         });
+
         CrawlingThread();
 
         return view;
@@ -205,7 +207,7 @@ public class LiveNewsFragment extends Fragment {
                 Toast.makeText(requireActivity(), "정상적으로 로그아웃 되었습니다", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(requireActivity(), LoginActivity.class);
                 startActivity(intent);
-                getActivity().finish();
+                requireActivity().finish();
             }
         });
     }
@@ -217,26 +219,27 @@ public class LiveNewsFragment extends Fragment {
                 //크롤링 할 구문
                 //URL 웹사이트에 있는 html 코드를 다 끌어오기
                 try {
-                    doc = Jsoup.connect(HeadLineURL).get();
+                    Document doc = Jsoup.connect(HeadLineURL).get();
                     assert doc != null;
                     ele = doc.select(".section_list_ranking_press").select("li");
-                    ele2 = doc.select(".aside").select("div");
+                    Elements ele2 = doc.select(".aside").select("div");
                     title.setText(ele2.select("div.section._officeTopRanking1087479").select("h4").text());
                     time.setText(ele2.select("div.section._officeTopRanking1087479").select("p").text());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (!ele.isEmpty()) {
-                    // null값이 아니면 크롤링 실행
-                    if (position == 0) {
-                        for (int i = 0; i < 20; i++) {
-                            LoadData(i);
-                        }
-                        position += 20;
 
+                    if (!ele.isEmpty()) {
+                        // null값이 아니면 크롤링 실행
+                        if (position == 0) {
+                            for (int i = 0; i < 20; i++) {
+                                LoadData(i);
+                            }
+                            position += 20;
+                        }
+                        Log.i("Tag", "Complete Load");
                     }
-                    Log.d("lScroll", "position is " + position);
-                    Log.i("Tag", "Complete Load " + position);
+                    if (swipe.isRefreshing())
+                        swipe.setRefreshing(false);
+                } catch (IOException | IndexOutOfBoundsException e) {
+                    e.printStackTrace();
                 }
             }
         }.start();
@@ -253,14 +256,12 @@ public class LiveNewsFragment extends Fragment {
                         }
                         position += 20;
                     } else {
-                        Log.e("lScroll", "max is " + (ele.size() - 1) + ",position is " + position);
                         for (int i = position; i < ele.size(); i++) {
                             LoadData(i);
                         }
                         position += ele.size() - position;
                     }
                     Log.d("lScroll", "Load More");
-                    Log.d("lScroll", "position is " + position);
                 }
             }
         }.start();
@@ -268,12 +269,11 @@ public class LiveNewsFragment extends Fragment {
 
     private void LoadData(int i) {
         try {
-            Log.d("lScroll", "position is " + position);
             String text = ele.eq(i).select(("div")).select("div").select("div").select("a.list_tit").text()
                     + " <" + ele.eq(i).select(("div")).select("div").select("div")
                     .select("a.list_press").text() + ">";
             String img_url = ele.eq(i).select("a.ranking_thumb img").attr("src");
-            Log.i("TAG", i + " text : " + text + "\n" + i + " img : " + img_url);
+            Log.i("lData", i + " text : " + text + "\n" + i + " img : " + img_url);
             Drawable img;
             Bitmap bmp;
             URL url;
@@ -287,7 +287,7 @@ public class LiveNewsFragment extends Fragment {
 
             try {
                 addItem(img, text, i);
-                getActivity().runOnUiThread(new Runnable() {
+                requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         adapter.notifyItemInserted(i);
@@ -296,9 +296,6 @@ public class LiveNewsFragment extends Fragment {
             } catch (IndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
-            if (swipe.isRefreshing())
-                swipe.setRefreshing(false);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -310,5 +307,24 @@ public class LiveNewsFragment extends Fragment {
         item.setImg(img);
         item.setText(text);
         mList.add(count, item);
+    }
+
+    static class LinearLayoutManagerWrapper extends LinearLayoutManager {
+        public LinearLayoutManagerWrapper(Context context) {
+            super(context);
+        }
+
+        public LinearLayoutManagerWrapper(Context context, int orientation, boolean reverseLayout) {
+            super(context, orientation, reverseLayout);
+        }
+
+        public LinearLayoutManagerWrapper(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+            super(context, attrs, defStyleAttr, defStyleRes);
+        }
+
+        @Override
+        public boolean supportsPredictiveItemAnimations() {
+            return false;
+        }
     }
 }

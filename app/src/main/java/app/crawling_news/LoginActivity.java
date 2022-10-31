@@ -1,6 +1,7 @@
 package app.crawling_news;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -128,5 +130,27 @@ public class LoginActivity extends AppCompatActivity {
         } catch (ApiException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setTitle("종료");
+        alertDialog.setMessage("앱을 종료하시겠습니까?");
+        alertDialog.setIcon(R.drawable.exit);
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "종료", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                LoginActivity.super.onBackPressed();
+            }
+        });
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 }

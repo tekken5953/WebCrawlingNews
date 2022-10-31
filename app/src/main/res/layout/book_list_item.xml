@@ -3,17 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="85dp"
+    android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/bookTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:text="2022-01-01"
+        android:textColor="@color/primaryColor"
+        android:textSize="15sp"/>
 
     <ImageView
         android:id="@+id/bookImg"
         android:layout_width="85dp"
-        android:layout_height="match_parent"
+        android:layout_height="85dp"
         android:src="@drawable/app_icon"
+        android:layout_marginStart="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/bookTime"/>
 
     <TextView
         android:id="@+id/bookText"
@@ -25,21 +38,9 @@
         android:text="text"
         android:textColor="@color/primaryColor"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/bookImg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/bookImg"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/bookTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/bookText"
-        app:layout_constraintBottom_toBottomOf="@+id/bookText"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="15dp"
-        android:text="2022-01-01"
-        android:textColor="@color/primaryColor"
-        android:textSize="15sp"/>
+        app:layout_constraintTop_toTopOf="@+id/bookImg" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

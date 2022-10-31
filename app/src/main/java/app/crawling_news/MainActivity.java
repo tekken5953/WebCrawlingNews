@@ -2,11 +2,14 @@ package app.crawling_news;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -15,37 +18,48 @@ import app.crawling_news.live.LiveNewsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    Fragment bookmarkFrag = new BookMarkFragment();
-    Fragment liveNewsFrag = new LiveNewsFragment();
+//    Fragment bookmarkFrag = new BookMarkFragment();
+//    Fragment liveNewsFrag = new LiveNewsFragment();
     TabLayout tabLayout;
+    ViewPager2 viewPager;
+    ViewPagerAdapter viewPagerAdapter;
+    private static final int PAGES = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.mainFrame, liveNewsFrag)
-                .add(R.id.mainFrame,bookmarkFrag).hide(bookmarkFrag).commit();
-
+        viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
+        viewPagerAdapter = new ViewPagerAdapter(this);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    viewPager.setCurrentItem(0);
+                    tabLayout.selectTab(tabLayout.getTabAt(0));
+                } else {
+                    viewPager.setCurrentItem(1);
+                    tabLayout.selectTab(tabLayout.getTabAt(1));
+                }
+                super.onPageSelected(position);
+            }
+        });
+
+//        getSupportFragmentManager().beginTransaction().add(R.id.viewPager, liveNewsFrag)
+//                .add(R.id.viewPager,bookmarkFrag).hide(bookmarkFrag).commit();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
-
-                Fragment selected = null;
-                Fragment non_selected = null;
                 if (position == 0) {
-                    selected = liveNewsFrag;
-                    non_selected = bookmarkFrag;
+                    viewPager.setCurrentItem(0);
                 } else if (position == 1) {
-                    selected = bookmarkFrag;
-                    non_selected = liveNewsFrag;
+                    viewPager.setCurrentItem(1);
                 }
-                assert selected != null;
-                getSupportFragmentManager().beginTransaction().show(selected).hide(non_selected).commit();
-                Log.d("transaction","Non Selected is : " + non_selected.getId() + "Selected is : " + selected.getId());
             }
 
             @Override
@@ -56,6 +70,27 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+    }
+
+    static class ViewPagerAdapter extends FragmentStateAdapter {
+
+        public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            if (position == 0)
+                return new LiveNewsFragment();
+            else
+                return new BookMarkFragment();
+        }
+
+        @Override
+        public int getItemCount() {
+            return PAGES;
+        }
     }
 
     @Override

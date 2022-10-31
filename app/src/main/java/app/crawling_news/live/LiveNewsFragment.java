@@ -1,5 +1,6 @@
 package app.crawling_news.live;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,13 +16,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -89,6 +90,7 @@ public class LiveNewsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.live_news, container, false);
+        context = getContext();
 
         crawlingView = view.findViewById(R.id.crawlingView);
         swipe = view.findViewById(R.id.swipeLayout);
@@ -100,7 +102,6 @@ public class LiveNewsFragment extends Fragment {
 
         LinearLayoutManagerWrapper wrapper = new LinearLayoutManagerWrapper(context, LinearLayoutManager.VERTICAL, false);
         crawlingView.setLayoutManager(wrapper);
-        context = requireActivity().getApplicationContext();
         adapter = new CrawlingAdapter(mList);
         crawlingView.setAdapter(adapter);
 
@@ -134,8 +135,15 @@ public class LiveNewsFragment extends Fragment {
             public void onItemClick(View v, int position) {
                 if (!ele.isEmpty()) {
                     String link = ele.eq(position).select("a.ranking_thumb").attr("href");
+                    String thumb = ele.eq(position).select("a.ranking_thumb img").attr("src");
+                    String title = ele.eq(position).select(("div")).select("div").select("div").select("a.list_tit").text()
+                            + " <" + ele.eq(position).select(("div")).select("div").select("div")
+                            .select("a.list_press").text() + ">";
                     Intent intent = new Intent(context, WebViewInner.class);
                     intent.putExtra("link", link);
+                    intent.putExtra("thumb", thumb);
+                    intent.putExtra("title", title);
+                    intent.putExtra("bookmark", "show");
                     startActivity(intent);
                     requireActivity().overridePendingTransition(0, 0);
                 }
@@ -145,8 +153,8 @@ public class LiveNewsFragment extends Fragment {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                AlertDialog alertDialog = builder.create();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                final AlertDialog alertDialog = builder.create();
                 alertDialog.setMessage("로그아웃 하시겠습니까?");
                 alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "예", new DialogInterface.OnClickListener() {
                     @Override
@@ -168,7 +176,7 @@ public class LiveNewsFragment extends Fragment {
         crawlingView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                lastVisibleItemPosition = ((LinearLayoutManager) Objects.requireNonNull(recyclerView.getLayoutManager()))
+                lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
                         .findLastCompletelyVisibleItemPosition();
                 itemTotalCount = Objects.requireNonNull(recyclerView.getAdapter()).getItemCount() - 1;
                 if (lastVisibleItemPosition == itemTotalCount) {
@@ -177,6 +185,7 @@ public class LiveNewsFragment extends Fragment {
                     Log.d("lScroll", "ele size is " + ele.size());
                     if (position < ele.size()) {
                         pb.setVisibility(View.VISIBLE);
+                        requireActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         mainLayout.setEnabled(false);
                         mainLayout.setAlpha(0.7f);
                         Handler handler = new Handler(Looper.getMainLooper());
@@ -184,7 +193,7 @@ public class LiveNewsFragment extends Fragment {
                             @Override
                             public void run() {
                                 loadMore();
-                                mainLayout.setEnabled(true);
+                                requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 mainLayout.setAlpha(1f);
                                 pb.setVisibility(View.GONE);
                             }
@@ -309,7 +318,7 @@ public class LiveNewsFragment extends Fragment {
         mList.add(count, item);
     }
 
-    static class LinearLayoutManagerWrapper extends LinearLayoutManager {
+    public static class LinearLayoutManagerWrapper extends LinearLayoutManager {
         public LinearLayoutManagerWrapper(Context context) {
             super(context);
         }

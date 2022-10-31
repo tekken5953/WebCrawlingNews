@@ -44,4 +44,11 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-auth:20.3.0'
 
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    def room_version = "2.4.3"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
 }

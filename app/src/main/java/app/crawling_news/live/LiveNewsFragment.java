@@ -12,14 +12,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,6 +46,8 @@ import java.util.Objects;
 import app.crawling_news.LoginActivity;
 import app.crawling_news.R;
 import app.crawling_news.WebViewInner;
+import app.crawling_news.utils.LogUtils;
+import app.crawling_news.utils.ToastUtils;
 
 public class LiveNewsFragment extends Fragment {
     //https://lakue.tistory.com/m/35  URL -> Bitmap -> Drawable -> 이미지 뷰
@@ -73,6 +73,8 @@ public class LiveNewsFragment extends Fragment {
     int itemTotalCount;
     ProgressBar pb;
     ConstraintLayout mainLayout;
+    ToastUtils toastUtils = new ToastUtils();
+    LogUtils logUtils = new LogUtils();
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -181,8 +183,7 @@ public class LiveNewsFragment extends Fragment {
                 itemTotalCount = Objects.requireNonNull(recyclerView.getAdapter()).getItemCount() - 1;
                 if (lastVisibleItemPosition == itemTotalCount) {
                     super.onScrolled(recyclerView, dx, dy);
-                    Log.d("lScroll", "Scroll is Last");
-                    Log.d("lScroll", "ele size is " + ele.size());
+                    logUtils.ScrollLog("Scroll is Last" + "\nele size is " + ele.size());
                     if (position < ele.size()) {
                         pb.setVisibility(View.VISIBLE);
                         requireActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -212,8 +213,8 @@ public class LiveNewsFragment extends Fragment {
         Task<Void> signOutIntent = mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Log.e("gLogin", "Logout Complete : " + task.getResult());
-                Toast.makeText(requireActivity(), "정상적으로 로그아웃 되었습니다", Toast.LENGTH_SHORT).show();
+                logUtils.LoginFailLog("Logout Complete : " + task.getResult());
+                toastUtils.shortMessage(requireActivity(), "로그아웃 성공");
                 Intent intent = new Intent(requireActivity(), LoginActivity.class);
                 startActivity(intent);
                 requireActivity().finish();
@@ -243,7 +244,7 @@ public class LiveNewsFragment extends Fragment {
                             }
                             position += 20;
                         }
-                        Log.i("Tag", "Complete Load");
+                        logUtils.ScrollLog("Complete Load");
                     }
                     if (swipe.isRefreshing())
                         swipe.setRefreshing(false);
@@ -270,7 +271,7 @@ public class LiveNewsFragment extends Fragment {
                         }
                         position += ele.size() - position;
                     }
-                    Log.d("lScroll", "Load More");
+                    logUtils.ScrollLog("Load More");
                 }
             }
         }.start();
@@ -282,7 +283,7 @@ public class LiveNewsFragment extends Fragment {
                     + " <" + ele.eq(i).select(("div")).select("div").select("div")
                     .select("a.list_press").text() + ">";
             String img_url = ele.eq(i).select("a.ranking_thumb img").attr("src");
-            Log.i("lData", i + " text : " + text + "\n" + i + " img : " + img_url);
+            logUtils.LoadDataSuccessLog(i + " text : " + text + "\n" + i + " img : " + img_url);
             Drawable img;
             Bitmap bmp;
             URL url;

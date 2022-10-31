@@ -10,12 +10,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +35,8 @@ import app.crawling_news.db.AppDataBase;
 import app.crawling_news.db.BookMarkRepo;
 import app.crawling_news.db.DBModel;
 import app.crawling_news.live.LiveNewsFragment;
+import app.crawling_news.utils.LogUtils;
+import app.crawling_news.utils.ToastUtils;
 
 public class BookMarkFragment extends Fragment {
 
@@ -50,24 +50,26 @@ public class BookMarkFragment extends Fragment {
     AppDataBase db;
     BookMarkRepo repo;
     List<DBModel> bookmark_findAll;
+    ToastUtils toastUtils = new ToastUtils();
+    LogUtils logUtils = new LogUtils();
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        Log.i("BookMarkLifeCycle", "OnAttach");
+        logUtils.LifeCycleLog(context, "OnAttach");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("BookMarkLifeCycle", "OnResume");
+        logUtils.LifeCycleLog(getContext(), "OnResume");
         DBReLoad();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.i("BookMarkLifeCycle", "OnDetach");
+        logUtils.LifeCycleLog(getContext(), "OnDetach");
         mList.clear();
     }
 
@@ -75,7 +77,7 @@ public class BookMarkFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.book_mark, container, false);
-        Log.i("BookMarkLifeCycle", "onCreateView");
+        logUtils.LifeCycleLog(getContext(), "onCreateView");
 
         recyclerView = view.findViewById(R.id.bookRv);
         adapter = new BookMarkAdapter(mList);
@@ -134,7 +136,7 @@ public class BookMarkFragment extends Fragment {
                         repo.delete(bookmark_findAll.get(position));
                         alertDialog.dismiss();
                         DBReLoad();
-                        Toast.makeText(getContext(), "삭제를 완료했습니다", Toast.LENGTH_SHORT).show();
+                        toastUtils.shortMessage(getActivity(), "삭제를 완료했습니다");
                     }
                 });
                 alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
@@ -162,7 +164,7 @@ public class BookMarkFragment extends Fragment {
         recyclerView.removeAllViews();
         mList.clear();
 
-        Log.i("roomDB", "size is " + bookmark_findAll.size());
+        logUtils.LoadDataSuccessLog("DB Entry Size is " + bookmark_findAll.size());
 
         new Thread() {
             @Override
@@ -198,7 +200,7 @@ public class BookMarkFragment extends Fragment {
                         }
                     }
                 } else {
-                    Log.e("roomDB", "DB is Empty");
+                    logUtils.LoadDataFailLog("DB Entry is Empty");
                     requireActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

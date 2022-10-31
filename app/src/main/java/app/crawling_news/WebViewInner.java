@@ -3,7 +3,6 @@ package app.crawling_news;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -12,7 +11,6 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -22,6 +20,8 @@ import java.text.SimpleDateFormat;
 import app.crawling_news.db.AppDataBase;
 import app.crawling_news.db.BookMarkRepo;
 import app.crawling_news.db.DBModel;
+import app.crawling_news.utils.LogUtils;
+import app.crawling_news.utils.ToastUtils;
 
 public class WebViewInner extends AppCompatActivity {
 
@@ -29,6 +29,8 @@ public class WebViewInner extends AppCompatActivity {
     ImageView back, more;
     TextView urlTv;
     private BookMarkRepo repo;
+    ToastUtils toastUtils = new ToastUtils();
+    LogUtils logUtils = new LogUtils();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -86,7 +88,7 @@ public class WebViewInner extends AppCompatActivity {
                             Intent chooser = Intent.createChooser(intent, "친구에게 공유하기");
                             startActivity(chooser);
                         } else if (item.getItemId() == R.id.pop_save) {
-                            Toast.makeText(WebViewInner.this, "해당 기사가 보관되었습니다", Toast.LENGTH_SHORT).show();
+                            toastUtils.shortMessage(WebViewInner.this, "해당 기사가 보관되었습니다");
                             String thumb = getIntent().getExtras().getString("thumb");
                             String link = getIntent().getExtras().getString("link");
                             String title = getIntent().getExtras().getString("title");
@@ -97,7 +99,7 @@ public class WebViewInner extends AppCompatActivity {
                             // DB에 썸네일 + 제목 + 주소 + 날짜 저장
                             DBModel model = new DBModel(date, title, thumb, link);
                             repo.insert(model);
-                            Log.d("roomDB", "DB Insert Ok");
+                            logUtils.LoadDataSuccessLog("DB Insert Ok");
                         }
                         return true;
                     }

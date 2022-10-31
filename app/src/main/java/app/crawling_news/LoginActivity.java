@@ -1,18 +1,14 @@
 package app.crawling_news;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -26,6 +22,10 @@ import com.google.android.gms.tasks.Task;
 import java.util.Locale;
 import java.util.Objects;
 
+import app.crawling_news.utils.BackPressedUtil;
+import app.crawling_news.utils.LogUtils;
+import app.crawling_news.utils.ToastUtils;
+
 public class LoginActivity extends AppCompatActivity {
 
     // 전체 진행 과정https://velog.io/@jeongminji4490/Android-Google-Login-%EA%B5%AC%ED%98%84
@@ -36,6 +36,9 @@ public class LoginActivity extends AppCompatActivity {
     ConstraintLayout loginLayout;
     com.google.android.gms.common.SignInButton login;
     GoogleSignInAccount lastLogin;
+    ToastUtils toastUtils = new ToastUtils();
+    BackPressedUtil backPressedUtil = new BackPressedUtil();
+    LogUtils logUtils = new LogUtils();
 
     @Override
     protected void onStart() {
@@ -44,9 +47,9 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-            Toast.makeText(this, lastLogin.getDisplayName() + "님 환영합니다!", Toast.LENGTH_SHORT).show();
+            toastUtils.shortMessage(this, lastLogin.getDisplayName() + "님 환영합니다!");
         } else {
-            Log.e("Tag", "Last login Session is NULL");
+            logUtils.LoginFailLog("Last login Session is NULL");
         }
     }
 
@@ -93,8 +96,8 @@ public class LoginActivity extends AppCompatActivity {
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                         handleSignInResult(task);
                     } else {
-                        Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
-                        Log.e("Tag", "result code is " + result.getResultCode());
+                        toastUtils.shortMessage(LoginActivity.this, "로그인 실패" + "님 환영합니다!");
+                        logUtils.ResultFail(result);
                         login.setEnabled(true);
                     }
                 }
@@ -113,17 +116,12 @@ public class LoginActivity extends AppCompatActivity {
             if (account.getPhotoUrl() != null) {
                 photo = account.getPhotoUrl().toString();
             }
+            logUtils.LoginSuccessLog(
+                    "gLogin" + "\nId : " + id + "Account" + account + "\nDisplayName : " + displayName
+                            + "\nFamilyName : " + familyName + "\nGivenName : " + givenName + "\nToken : "
+                            + token + "\nEmail : " + email + "\nprofile : " + photo);
 
-            Log.d("gLogin", "\nId : " + id + "Account" + account + "\nDisplayName : " + displayName
-                    + "\nFamilyName : " + familyName + "\nGivenName : " + givenName + "\nToken : "
-                    + token + "\nEmail : " + email + "\nprofile : " + photo);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(LoginActivity.this, displayName + "님 환영합니다!",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+            toastUtils.shortMessage(LoginActivity.this, displayName + "님 환영합니다!");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -134,23 +132,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setTitle("종료");
-        alertDialog.setMessage("앱을 종료하시겠습니까?");
-        alertDialog.setIcon(R.drawable.exit);
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "종료", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                LoginActivity.super.onBackPressed();
-            }
-        });
-        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.show();
+        backPressedUtil.makeDialog(LoginActivity.this, "종료", "앱을 종료하시겠습니까?", "종료", "취소",
+                null);
     }
 }

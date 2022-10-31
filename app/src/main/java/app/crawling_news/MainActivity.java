@@ -1,11 +1,10 @@
 package app.crawling_news;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -15,15 +14,15 @@ import com.google.android.material.tabs.TabLayout;
 
 import app.crawling_news.bookmark.BookMarkFragment;
 import app.crawling_news.live.LiveNewsFragment;
+import app.crawling_news.utils.BackPressedUtil;
 
 public class MainActivity extends AppCompatActivity {
 
-//    Fragment bookmarkFrag = new BookMarkFragment();
-//    Fragment liveNewsFrag = new LiveNewsFragment();
     TabLayout tabLayout;
     ViewPager2 viewPager;
     ViewPagerAdapter viewPagerAdapter;
     private static final int PAGES = 2;
+    BackPressedUtil backPressedUtil = new BackPressedUtil();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 super.onPageSelected(position);
             }
         });
-
-//        getSupportFragmentManager().beginTransaction().add(R.id.viewPager, liveNewsFrag)
-//                .add(R.id.viewPager,bookmarkFrag).hide(bookmarkFrag).commit();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -95,23 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.setTitle("종료");
-        alertDialog.setMessage("앱을 종료하시겠습니까?");
-        alertDialog.setIcon(R.drawable.exit);
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "종료", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                MainActivity.super.onBackPressed();
-            }
-        });
-        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.show();
+        backPressedUtil.makeDialog(MainActivity.this, "종료", "앱을 종료하시겠습니까?", "종료", "취소",
+                ResourcesCompat.getDrawable(getResources(), R.drawable.exit, null));
     }
 }

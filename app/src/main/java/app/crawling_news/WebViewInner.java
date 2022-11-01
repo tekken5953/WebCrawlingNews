@@ -25,10 +25,6 @@ import app.crawling_news.utils.ToastUtils;
 
 public class WebViewInner extends AppCompatActivity {
 
-    WebView webView;
-    ImageView back, more;
-    TextView urlTv;
-    private BookMarkRepo repo;
     ToastUtils toastUtils = new ToastUtils();
     LogUtils logUtils = new LogUtils();
 
@@ -38,10 +34,10 @@ public class WebViewInner extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.web_view);
 
-        webView = findViewById(R.id.webView);
-        back = findViewById(R.id.webViewBackIv);
-        urlTv = findViewById(R.id.webViewURLTv);
-        more = findViewById(R.id.webViewOptionIv);
+        WebView webView = findViewById(R.id.webView);
+        ImageView back = findViewById(R.id.webViewBackIv);
+        TextView urlTv = findViewById(R.id.webViewURLTv);
+        ImageView more = findViewById(R.id.webViewOptionIv);
 
         String link = getIntent().getExtras().getString("link");
         urlTv.setText(link);
@@ -58,7 +54,7 @@ public class WebViewInner extends AppCompatActivity {
                 .fallbackToDestructiveMigration() //스키마 버전 변경 가능
                 .allowMainThreadQueries() // 메인 스레드에서 DB에 IO를 가능하게 함
                 .build();
-        repo = db.bookMarkRepo();
+        BookMarkRepo repo = db.bookMarkRepo();
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +95,7 @@ public class WebViewInner extends AppCompatActivity {
                             // DB에 썸네일 + 제목 + 주소 + 날짜 저장
                             DBModel model = new DBModel(date, title, thumb, link);
                             repo.insert(model);
-                            logUtils.LoadDataSuccessLog("DB Insert Ok");
+                            logUtils.DBSuccessLog("DB Insert Ok");
                         }
                         return true;
                     }

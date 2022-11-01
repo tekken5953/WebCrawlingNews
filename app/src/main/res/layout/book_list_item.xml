@@ -10,23 +10,23 @@
         android:id="@+id/bookTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="5dp"
         android:layout_marginTop="15dp"
         android:text="2022-01-01"
         android:textColor="@color/primaryColor"
-        android:textSize="15sp"/>
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/bookImg"
         android:layout_width="85dp"
         android:layout_height="85dp"
-        android:src="@drawable/app_icon"
         android:layout_marginStart="5dp"
+        android:src="@drawable/app_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookTime"/>
+        app:layout_constraintTop_toBottomOf="@+id/bookTime" />
 
     <TextView
         android:id="@+id/bookText"

@@ -10,28 +10,90 @@
         android:id="@+id/bookTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="보관함"
-        android:textStyle="bold"
-        android:textColor="@color/primaryColor"
-        android:textAllCaps="false"
-        android:textSize="18sp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:text="보관함"
+        android:textAllCaps="false"
+        android:textColor="@color/primaryColor"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/prevDateTv"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/text_outline_black"
+        android:gravity="center"
+        android:text="-"
+        android:textAllCaps="false"
+        android:textColor="@color/primaryColor"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bookTitle" />
+
+    <ImageView
+        android:id="@+id/prevDateIv"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/calendar"
+        app:tint="@color/primaryColor"
+        app:layout_constraintBottom_toBottomOf="@+id/prevDateTv"
+        app:layout_constraintStart_toEndOf="@+id/prevDateTv"
+        app:layout_constraintTop_toTopOf="@+id/prevDateTv" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bar"
+        app:tint="@color/primaryColor"
+        app:layout_constraintBottom_toBottomOf="@+id/prevDateIv"
+        app:layout_constraintEnd_toStartOf="@+id/nextDateTv"
+        app:layout_constraintStart_toEndOf="@+id/prevDateIv"
+        app:layout_constraintTop_toTopOf="@+id/prevDateIv" />
+
+    <TextView
+        android:id="@+id/nextDateTv"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/text_outline_black"
+        android:gravity="center"
+        android:text="-"
+        android:textAllCaps="false"
+        android:textColor="@color/primaryColor"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/prevDateTv"
+        app:layout_constraintEnd_toStartOf="@+id/nextDateIv"
+        app:layout_constraintTop_toTopOf="@+id/prevDateTv" />
+
+    <ImageView
+        android:id="@+id/nextDateIv"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/calendar"
+        app:tint="@color/primaryColor"
+        app:layout_constraintBottom_toBottomOf="@+id/prevDateTv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/prevDateTv" />
 
     <TextView
         android:id="@+id/bookNothingTx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/bookTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:text="보관하신 뉴스가 없습니다"
-        android:textSize="16sp"
         android:textAllCaps="false"
-        android:textColor="@color/primaryColor"/>
+        android:textColor="@color/primaryColor"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bookTitle" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/bookSwipe"
@@ -41,7 +103,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookTitle">
+        app:layout_constraintTop_toBottomOf="@+id/prevDateTv">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bookRv"

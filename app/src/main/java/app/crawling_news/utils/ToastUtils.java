@@ -8,19 +8,11 @@ public class ToastUtils {
 
     public void shortMessage(Activity context, final String message) {
         toast = new Toast(context);
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                toast.cancel();
-                toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-                toast.show();
-            }
+        Runnable r = () -> {
+            toast.cancel();
+            toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            toast.show();
         };
-        context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                r.run();
-            }
-        });
+        context.runOnUiThread(r);
     }
 }

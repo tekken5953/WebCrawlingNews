@@ -30,8 +30,6 @@ public class LoginActivity extends AppCompatActivity {
 
     // 전체 진행 과정https://velog.io/@jeongminji4490/Android-Google-Login-%EA%B5%AC%ED%98%84
     // 구글 콘솔 등록 developers.google.com/identity/sign-in/android/start-integrating
-
-    GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
     ConstraintLayout loginLayout;
     com.google.android.gms.common.SignInButton login;
@@ -60,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // 앱에 필요한 사용자 데이터를 요청하도록 로그인 옵션을 설정한다.
         // DEFAULT_SIGN_IN parameter는 유저의 ID와 기본적인 프로필 정보를 요청하는데 사용된다.
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail() // email addresses도 요청함
                 .build();
 

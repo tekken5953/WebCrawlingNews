@@ -53,26 +53,20 @@ public class LiveNewsFragment extends Fragment {
     //https://lakue.tistory.com/m/35  URL -> Bitmap -> Drawable -> 이미지 뷰
     //https://min-wachya.tistory.com/m/132 웹에서 이미지 크롤링 하기
 
-    private final String HeadLineURL = "https://news.naver.com/main/officeList.naver";
-
-    RecyclerView crawlingView;
     SwipeRefreshLayout swipe;
 
     ArrayList<CrawlingItem> mList = new ArrayList<>();
     CrawlingAdapter adapter;
     Elements ele;
 
-    GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
-    TextView title, time, logout;
+    TextView title, time;
     Context context;
 
     int position;
-
     int lastVisibleItemPosition;
     int itemTotalCount;
-    ProgressBar pb;
-    ConstraintLayout mainLayout;
+
     ToastUtils toastUtils = new ToastUtils();
     LogUtils logUtils = new LogUtils();
 
@@ -94,13 +88,13 @@ public class LiveNewsFragment extends Fragment {
         View view = inflater.inflate(R.layout.live_news, container, false);
         context = getContext();
 
-        crawlingView = view.findViewById(R.id.crawlingView);
+        RecyclerView crawlingView = view.findViewById(R.id.crawlingView);
         swipe = view.findViewById(R.id.swipeLayout);
-        logout = view.findViewById(R.id.googleLogoutBtn);
+        TextView logout = view.findViewById(R.id.googleLogoutBtn);
         title = view.findViewById(R.id.topTitleTv);
         time = view.findViewById(R.id.topTimeTv);
-        pb = view.findViewById(R.id.mainPB);
-        mainLayout = view.findViewById(R.id.liveMainLayout);
+        ProgressBar pb = view.findViewById(R.id.mainPB);
+        ConstraintLayout mainLayout = view.findViewById(R.id.liveMainLayout);
 
         LinearLayoutManagerWrapper wrapper = new LinearLayoutManagerWrapper(context, LinearLayoutManager.VERTICAL, false);
         crawlingView.setLayoutManager(wrapper);
@@ -109,27 +103,21 @@ public class LiveNewsFragment extends Fragment {
 
         // 앱에 필요한 사용자 데이터를 요청하도록 로그인 옵션을 설정한다.
         // DEFAULT_SIGN_IN parameter는 유저의 ID와 기본적인 프로필 정보를 요청하는데 사용된다.
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail() // email addresses도 요청함
                 .build();
 
         // 위에서 만든 GoogleSignInOptions을 사용해 GoogleSignInClient 객체를 만듬
         mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
 
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        crawlingView.removeAllViews();
-                        mList.clear();
-                        position = 0;
-                        CrawlingThread();
-                    }
-                }, 1500);
-            }
+        swipe.setOnRefreshListener(() -> {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(() -> {
+                crawlingView.removeAllViews();
+                mList.clear();
+                position = 0;
+                CrawlingThread();
+            }, 1500);
         });
 
         adapter.setOnItemClickListener(new CrawlingAdapter.OnItemClickListener() {
@@ -190,14 +178,11 @@ public class LiveNewsFragment extends Fragment {
                         mainLayout.setEnabled(false);
                         mainLayout.setAlpha(0.7f);
                         Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadMore();
-                                requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                mainLayout.setAlpha(1f);
-                                pb.setVisibility(View.GONE);
-                            }
+                        handler.postDelayed(() -> {
+                            loadMore();
+                            requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            mainLayout.setAlpha(1f);
+                            pb.setVisibility(View.GONE);
                         }, 800);
                     }
                 }
@@ -229,6 +214,7 @@ public class LiveNewsFragment extends Fragment {
                 //크롤링 할 구문
                 //URL 웹사이트에 있는 html 코드를 다 끌어오기
                 try {
+                    final String HeadLineURL = "https://news.naver.com/main/officeList.naver";
                     Document doc = Jsoup.connect(HeadLineURL).get();
                     assert doc != null;
                     ele = doc.select(".section_list_ranking_press").select("li");
@@ -297,12 +283,7 @@ public class LiveNewsFragment extends Fragment {
 
             try {
                 addItem(img, text, i);
-                requireActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyItemInserted(i);
-                    }
-                });
+                requireActivity().runOnUiThread(() -> adapter.notifyItemInserted(i));
             } catch (IndexOutOfBoundsException e) {
                 e.printStackTrace();
             }

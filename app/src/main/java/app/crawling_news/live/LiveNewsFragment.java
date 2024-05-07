@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -95,20 +96,29 @@ public class LiveNewsFragment extends Fragment {
         time = view.findViewById(R.id.topTimeTv);
         ProgressBar pb = view.findViewById(R.id.mainPB);
         ConstraintLayout mainLayout = view.findViewById(R.id.liveMainLayout);
+        ImageView fab = view.findViewById(R.id.mainFab);
 
         LinearLayoutManagerWrapper wrapper = new LinearLayoutManagerWrapper(context, LinearLayoutManager.VERTICAL, false);
         crawlingView.setLayoutManager(wrapper);
         adapter = new CrawlingAdapter(mList);
         crawlingView.setAdapter(adapter);
 
-        // 앱에 필요한 사용자 데이터를 요청하도록 로그인 옵션을 설정한다.
-        // DEFAULT_SIGN_IN parameter는 유저의 ID와 기본적인 프로필 정보를 요청하는데 사용된다.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail() // email addresses도 요청함
-                .build();
 
-        // 위에서 만든 GoogleSignInOptions을 사용해 GoogleSignInClient 객체를 만듬
-        mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                crawlingView.scrollToPosition(0);
+            }
+        });
+
+//        // 앱에 필요한 사용자 데이터를 요청하도록 로그인 옵션을 설정한다.
+//        // DEFAULT_SIGN_IN parameter는 유저의 ID와 기본적인 프로필 정보를 요청하는데 사용된다.
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestEmail() // email addresses 도 요청함
+//                .build();
+
+//        // 위에서 만든 GoogleSignInOptions을 사용해 GoogleSignInClient 객체를 만듬
+//        mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
 
         swipe.setOnRefreshListener(() -> {
             Handler handler = new Handler(Looper.getMainLooper());
@@ -166,7 +176,7 @@ public class LiveNewsFragment extends Fragment {
         crawlingView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                lastVisibleItemPosition = ((LinearLayoutManager) Objects.requireNonNull(recyclerView.getLayoutManager()))
                         .findLastCompletelyVisibleItemPosition();
                 itemTotalCount = Objects.requireNonNull(recyclerView.getAdapter()).getItemCount() - 1;
                 if (lastVisibleItemPosition == itemTotalCount) {
@@ -226,7 +236,7 @@ public class LiveNewsFragment extends Fragment {
                         // null값이 아니면 크롤링 실행
                         if (position == 0) {
                             for (int i = 0; i < 20; i++) {
-                                LoadData(i);
+                                LoadFirstData(i);
                             }
                             position += 20;
                         }
@@ -248,12 +258,12 @@ public class LiveNewsFragment extends Fragment {
                 if (lastVisibleItemPosition == itemTotalCount) {
                     if (position + 20 < ele.size()) {
                         for (int i = position; i < position + 20; i++) {
-                            LoadData(i);
+                            LoadFirstData(i);
                         }
                         position += 20;
                     } else {
                         for (int i = position; i < ele.size(); i++) {
-                            LoadData(i);
+                            LoadFirstData(i);
                         }
                         position += ele.size() - position;
                     }
@@ -263,7 +273,7 @@ public class LiveNewsFragment extends Fragment {
         }.start();
     }
 
-    private void LoadData(int i) {
+    private void LoadFirstData(int i) {
         try {
             String text = ele.eq(i).select(("div")).select("div").select("div").select("a.list_tit").text()
                     + " <" + ele.eq(i).select(("div")).select("div").select("div")

@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                         handleSignInResult(task);
                     } else {
-                        toastUtils.shortMessage(LoginActivity.this, "로그인 실패" + "님 환영합니다!");
+                        toastUtils.shortMessage(LoginActivity.this, "로그인 실패");
                         logUtils.ResultFail(result);
                         login.setEnabled(true);
                     }
